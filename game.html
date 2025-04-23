@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anagram</title>
+    <style>
+        body {
+          text-align: center;
+        }
+        input, button, select {
+          padding: 10px;
+          font-size: 16px;
+          margin: 5px;
+        }
+        #result {
+          margin-top: 20px;
+          font-weight: bold;
+        }
+      </style>
+    <link href="../Styling/general.css" rel="stylesheet">
+</head>
+<body>
+    <div class="topBanner">
+        <nav>
+            <a href="index.html">Preston Gibson</a>
+            <a>|</a>
+            <a href="/Bootstrap/bootstrap.html">Photography</a>
+            <a>|</a>
+            <a href="#">Game</a>
+        </nav>
+    </div>
+    <h1>Anagram Game</h1>
+  <label for="category">Choose a category:</label>
+  <select id="category" onchange="generateAnagram()">
+    <option value="random">Random</option>
+    <option value="animals">Animals</option>
+    <option value="fruits">Fruits</option>
+    <option value="tech">Tech Terms</option>
+  </select>
+
+  <p>Unscramble the letters:</p>
+  <h2 id="anagram">loading...</h2>
+
+  <input type="text" id="guess" placeholder="Your guess">
+  <button onclick="checkGuess()">Submit</button>
+
+  <div id="result"></div>
+
+  <script>
+    const wordBank = {
+      animals: ["elephant", "giraffe", "penguin", "tiger", "zebra", "kangaroo"],
+      fruits: ["banana", "mango", "apple", "orange", "grape", "kiwi"],
+      tech: ["python", "laptop", "router", "browser", "server", "javascript"]
+    };
+
+    let originalWord = "";
+    let scrambledWord = "";
+
+    function shuffle(word) {
+      return word.split('').sort(() => Math.random() - 0.5).join('');
+    }
+
+    function getWordsByCategory(category) {
+      const allWords = [].concat(...Object.values(wordBank));
+      if (category === "random") {
+        return allWords;
+      } else {
+        return wordBank[category] || [];
+      }
+    }
+
+    function generateAnagram() {
+      const category = document.getElementById("category").value;
+      const wordList = getWordsByCategory(category);
+      originalWord = wordList[Math.floor(Math.random() * wordList.length)];
+      scrambledWord = shuffle(originalWord);
+      while (scrambledWord === originalWord) {
+        scrambledWord = shuffle(originalWord);
+      }
+      document.getElementById("anagram").textContent = scrambledWord;
+      document.getElementById("result").textContent = "";
+      document.getElementById("guess").value = "";
+    }
+
+    function checkGuess() {
+      const userGuess = document.getElementById("guess").value.trim().toLowerCase();
+      const resultDiv = document.getElementById("result");
+
+      if (userGuess === originalWord) {
+        resultDiv.textContent = "Correct! 🎉 New anagram coming up...";
+        setTimeout(generateAnagram, 2000); // 2-second delay before next puzzle
+      } else {
+        resultDiv.textContent = "Incorrect, try again!";
+      }
+    }
+
+    window.onload = generateAnagram;
+  </script>
+  </body>
+</html>
